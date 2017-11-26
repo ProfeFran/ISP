@@ -34,8 +34,11 @@ public class Conexion {
         return cnn;
     }
     
-    public void abrirConexion(){
-        instancia = new Conexion();
+    public Conexion abrirConexion(){
+        if (instancia == null){
+            instancia = new Conexion();
+        } 
+        return instancia;
     }
     
     public void cerrarConexion(){
