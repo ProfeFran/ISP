@@ -18,14 +18,13 @@ public class ContactoADO {
     private ResultSet resultset;
     
     public ContactoADO() {
-        
     }
     
     public void agregarContacto(Contacto contacto){
         try {
             conexion.abrirConexion();
             
-            statement = conexion.getCnn().prepareStatement("INSERT INTO contacto VALUES (0,?,?,?)");
+            statement = conexion.getCnn().prepareStatement("INSERT INTO contacto(rut, email, telefono) VALUES (?,?,?)");
             statement.setString(1, contacto.getRut());
             statement.setString(2, contacto.getEmail());
             statement.setInt(3, contacto.getTelefono());

@@ -23,5 +23,6 @@
                 </tr>
             </table>
         </form>
+        <a href="index.jsp">Volver al Inicio</a>
     </body>
 </html>

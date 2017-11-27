@@ -11,7 +11,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>INDEX</title>
     </head>
-    <body>
+    <body>       
         <form action="SIniciarSesion" method="POST">
             <table border="1" align="center">
                 <tr>
@@ -23,7 +23,7 @@
                 </tr>
                 <tr>
                     <td>Contraseña: </td>
-                    <td><input type="text" name="txtUsuario" /></td>
+                    <td><input type="password" name="txtContrasena" /></td>
                 </tr>
                 <tr>
                     <td><input type="submit" name="btnNuevoUsuario" value="Nuevo Usuario"/></td>

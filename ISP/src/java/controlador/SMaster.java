@@ -8,14 +8,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author Development
+ * @author ProfeFran
  */
-
-@WebServlet(name = "SElegirUsuario", urlPatterns = {"/SElegirUsuario"})
-public class SElegirUsuario extends HttpServlet {
+@WebServlet(name = "SMaster", urlPatterns = {"/SMaster"})
+public class SMaster extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -29,14 +29,21 @@ public class SElegirUsuario extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
-        if (request.getParameter("btnParticular") != null)
-        {
-            response.sendRedirect("nuevo_particular.jsp");
-        } 
-        else if (request.getParameter("btnEmpresa") != null)
-        {
-            response.sendRedirect("nueva_empresa.jsp");
+        try (PrintWriter out = response.getWriter()) {
+            
+            if (request.getParameter("btnAgregarMuestra") != null) 
+            {
+                
+            }
+            else if (request.getParameter("btnListarMuestras") != null) 
+            {
+
+            }
+            else if (request.getParameter("btnSalir") != null)
+            {
+                //Agregar cierre de Session
+                response.sendRedirect("index.jsp");
+            }
         }
     }
 

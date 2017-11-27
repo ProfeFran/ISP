@@ -1,7 +1,7 @@
 <%-- 
-    Document   : error_en_sesion
-    Created on : 26-nov-2017, 17:17:39
-    Author     : Development
+    Document   : home
+    Created on : 26-11-2017, 22:54:34
+    Author     : ProfeFran
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -9,9 +9,10 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>DETALLE ERROR</title>
+        <title>HOME</title>
     </head>
     <body>
-        <a href="index.jsp">Volver al Inicio</a>
+        <jsp:include page="masterPage.jsp" flush="true"></jsp:include>
+        <h1>Hello World!</h1>
     </body>
 </html>

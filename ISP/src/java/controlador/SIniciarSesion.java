@@ -38,7 +38,7 @@ public class SIniciarSesion extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         
         if (request.getParameter("btnNuevoUsuario") != null) 
@@ -48,73 +48,89 @@ public class SIniciarSesion extends HttpServlet {
         else if (request.getParameter("btnIngresar") != null) 
         {
             String rut = request.getParameter("txtUsuario");
-            String contraseña = request.getParameter("txtContraseña");
+            String contrasena = request.getParameter("txtContrasena");
             
             String mensajeLog = "(000): No Identificado";
             
+            //Mejorar Session y cerrarla
+            //Implementar Log4J
+            //Formulario para montar Muestra
+            //Formulario para resultado
+            //Formulario para dar de baja a un usuario
+            //Listar muestras por rut
+            
             HttpSession actualSesion = request.getSession(true);
             actualSesion.setAttribute("usuario", rut);
-            actualSesion.setAttribute("contraseña", contraseña);
+            actualSesion.setAttribute("contrasena", contrasena);
             
-            if (!rut.trim().isEmpty() || !contraseña.trim().isEmpty())
+            if (!rut.trim().isEmpty() && !contrasena.trim().isEmpty())
             {
                 Conexion con = new Conexion();
                 
-                try
+                if (esEmpresa(rut))
                 {
-                    String queryEmpresa = "SELECT rut, contraseña "
-                            + "FROM solicitudes_empresas "
-                            + "WHERE rut = '" + rut + "';";
-                    String queryParticular = "SELECT rut, contraseña "
-                            + "FROM solicitudes_particulares "
-                            + "WHERE rut = '" + rut + "';";
-                    
-                    PreparedStatement pse = con.getCnn().prepareStatement(queryEmpresa);
-                    PreparedStatement psp = con.getCnn().prepareStatement(queryParticular);
-                    
-                    ResultSet rse = pse.executeQuery();
-                    rse.next();
-                    ResultSet rsp = psp.executeQuery();
-                    rsp.next();
-                    
-                    String rutEmpresa = rse.getString("rut");
-                    String rutParticular = rsp.getString("rut");
-                    
-                    String contraseñaEmpresa = rse.getString("contraseña");
-                    String contraseñaParticular = rsp.getString("contraseña");
-                    
-                    if (!rutEmpresa.trim().isEmpty() || !rutParticular.trim().isEmpty())
-                    {
-                        if ((rut.equalsIgnoreCase(rutEmpresa) && contraseña.equals(contraseñaEmpresa))
-                                || (rut.equalsIgnoreCase(rutParticular) && contraseña.equals(contraseñaParticular)))
+                    try {
+                        actualSesion.setAttribute("tipoCliente", 0);
+                        
+                        String queryEmpresa = "SELECT rut, contraseña "
+                                + "FROM solicitudes_empresas "
+                                + "WHERE rut = " + rut + ";";
+                        
+                        PreparedStatement pse = con.getCnn().prepareStatement(queryEmpresa);
+                        
+                        ResultSet rse = pse.executeQuery();
+                        rse.next();
+                        
+                        String rutEmpresa = rse.getString("rut");
+                        String contraseñaEmpresa = rse.getString("contraseña");
+                        
+                        try 
                         {
-                            // SI ES EMPRESA LA VARIABLE tipoCliente ES 0, SINO ES 1
-                            // CON ESO PODEMOS HACER TODAS LAS VALIDACIONES MAS ADELANTE
-                            if (esEmpresa(rut))
+                            if (autentificar(rut, contrasena, rutEmpresa, contraseñaEmpresa))
                             {
-                                actualSesion.setAttribute("tipoCliente", 0);
-                            } 
-                            else
-                            {
-                                actualSesion.setAttribute("tipoCliente", 1);
+                                response.sendRedirect("home.jsp");
                             }
-                            response.sendRedirect("home.jsp");
-                        } 
-                        else 
-                        {
-                            mensajeLog = "(002): Contraseña equivocada";
+                        } catch (Exception ex) {
+                            mensajeLog = ex.getMessage();
                         }
-                    } 
-                    else
-                    {
-                        mensajeLog = "(001): Usuario desconocido";
-                    }  
-                }
-                catch (SQLException ex)
+                        
+                    } catch (SQLException ex) {
+                        Logger.getLogger(SIniciarSesion.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
+                } 
+                else
                 {
-                    Logger.getLogger(SIniciarSesion.class.getName()).log(Level.SEVERE, null, ex);
+                    try {
+                        actualSesion.setAttribute("tipoCliente", 1);
+                        
+                        String queryParticular = "SELECT rut, contraseña "
+                                + "FROM solicitudes_particulares "
+                                + "WHERE rut = " + rut + ";";
+                        
+                        PreparedStatement psp = con.getCnn().prepareStatement(queryParticular);
+                        
+                        ResultSet rsp = psp.executeQuery();
+                        rsp.next();
+                        
+                        String rutParticular = rsp.getString("rut");
+                        String contraseñaParticular = rsp.getString("contraseña");
+                        
+                        try 
+                        {
+                            if (autentificar(rut, contrasena, rutParticular, contraseñaParticular))
+                            {
+                                response.sendRedirect("home.jsp");
+                            }
+                        } catch (Exception ex) {
+                            mensajeLog = ex.getMessage();
+                        }
+                        
+                        
+                    } catch (SQLException ex) {
+                        Logger.getLogger(SIniciarSesion.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-                
             } 
             else
             {
@@ -122,7 +138,7 @@ public class SIniciarSesion extends HttpServlet {
             }
             
             actualSesion.setAttribute("mensajeLog", mensajeLog);
-            response.sendRedirect("error.jsp");
+            response.sendRedirect("error_inicio_sesion.jsp");
         }
     }
 
@@ -138,7 +154,11 @@ public class SIniciarSesion extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(SIniciarSesion.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -152,7 +172,11 @@ public class SIniciarSesion extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(SIniciarSesion.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -165,12 +189,26 @@ public class SIniciarSesion extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    private boolean autentificar(String usuario, String contraseña, String usuarioBDD, String contraseñaBDD) throws Exception
+    {
+        if (!usuario.trim().isEmpty()){
+            if (usuario.equalsIgnoreCase(usuarioBDD) && contraseña.equals(contraseñaBDD))
+            {
+                return true;
+            } else {
+                throw new Exception("(002): Contraseña equivocada");
+            }
+        } else {
+            throw new Exception("(001): Usuario desconocido");
+        }
+    }
+    
     private boolean esEmpresa(String rut) 
     {
         Conexion con = new Conexion();
         
         String query = "SELECT rut FROM solicitudes_empresas "
-                + "WHERE rut = '" + rut + "';";
+                + "WHERE rut = " + rut + ";";
         
         try
         {
@@ -184,7 +222,6 @@ public class SIniciarSesion extends HttpServlet {
         {
             Logger.getLogger(SIniciarSesion.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
         return false;
     }
 
