@@ -11,7 +11,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>ERROR SESSION</title>
     </head>
     <body>
         <form action="SError" method="POST">

@@ -43,7 +43,7 @@ public class SIniciarSesion extends HttpServlet {
         
         if (request.getParameter("btnNuevoUsuario") != null) 
         {
-            response.sendRedirect("nuevo_usuario.jsp");
+            response.sendRedirect("tipo_usuario.jsp");
         }
         else if (request.getParameter("btnIngresar") != null) 
         {

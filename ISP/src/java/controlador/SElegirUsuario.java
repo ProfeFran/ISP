@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package controlador;
 
 import java.io.IOException;
@@ -17,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Development
  */
+
 @WebServlet(name = "SElegirUsuario", urlPatterns = {"/SElegirUsuario"})
 public class SElegirUsuario extends HttpServlet {
 
@@ -32,11 +29,12 @@ public class SElegirUsuario extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        if (request.getParameter("btnbtnParticular") != null)
+        
+        if (request.getParameter("btnParticular") != null)
         {
             response.sendRedirect("nuevo_particular.jsp");
         } 
-        else
+        else if (request.getParameter("btnEmpresa") != null)
         {
             response.sendRedirect("nuevo_empresa.jsp");
         }

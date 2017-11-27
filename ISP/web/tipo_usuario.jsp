@@ -9,13 +9,13 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>TIPO USUARIO</title>
     </head>
     <body>
         <form action="SElegirUsuario" method="POST">
             <table border="1" align="center">
                 <tr>
-                    <td colspan="2" align="center"><h3>TIPO DE USUARIO</h3></td>
+                    <td colspan="2" align="center"><h3>SELECCIONE TIPO DE USUARIO</h3></td>
                 </tr>
                 <tr>
                     <td><input type="submit" name="btnParticular" value="Particular"/></td>
